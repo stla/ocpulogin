@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<title>OpenCPU login</title>
+
+	<script src="opencpu/jquery-3.1.0.min.js"></script>
+	<script src="opencpu/opencpu-0.5.js"></script>
+	<script src="js/cookies.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<script>
+		function logout() {
+			document.cookie = "hash=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+			window.location = "login.html";
+		}
+	</script>
+
+	<script>
+		function app() {
+			$("#hello").text("Hello " + getCookie("username"));
+		}
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			var user = getCookie("username");
+			var hash = getCookie("hash");
+			if (user == "" || hash == "") {
+				window.location = "login.html";
+			} else {
+				var req = ocpu.rpc(
+					"checkLogin", {
+						username: user,
+						hash: hash
+					},
+					function(result) {
+						if (result == "false") {
+							window.location = "login.html";
+						} else {
+							app();
+						}
+					}
+				);
+			}
+		})
+	</script>
+
+</head>
+
+<body>
+
+	<div>
+		<form align="right" onsubmit="logout(); return false;">
+			<label style="position:relative;right:10px;top:5px;">
+        <button type="submit" class="btn btn-info btn-sm">
+          <span class="glyphicon glyphicon-log-out"></span> Log out
+        </button>
+      </label>
+		</form>
+	</div>
+
+	<div>
+		<p id="hello"></p>
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<title>OpenCPU login</title>
+
+	<script src="opencpu/jquery-3.1.0.min.js"></script>
+	<script src="opencpu/opencpu-0.5.js"></script>
+	<script src="js/cookies.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/login.css">
+
+	<script>
+		Rlogin = function() {
+			var req = ocpu.rpc(
+				"login", {
+					username: $("#username").val(),
+					password: $("#password").val()
+				},
+				function(result) {
+					if (result.success != "true") {
+						$("#username").val("").attr("placeholder", "Username");
+						$("#password").val("").attr("placeholder", "Password");
+						if (result.error == "unknown") {
+							alert("Unknown username");
+						} else {
+							alert("Wrong password");
+						}
+					} else {
+						setCookie("username", $("#username").val(), 1);
+						setCookie("hash", result.hash[0]);
+						window.location = "index.html";
+					}
+				}
+			);
+		}
+	</script>
+
+</head>
+
+<body>
+
+	<div class="login">
+		<form onsubmit="Rlogin(); return false;">
+			<h1>Login</h1>
+			<input type="text" id="username" placeholder="Username" required="required" />
+			<input type="password" id="password" placeholder="Password" required="required" />
+			<button type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>
+		</form>
+	</div>
+
+
+</body>
+
+</html>
